@@ -13,23 +13,46 @@ import com.example.spring.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Service
 public class ProductService {
     @Autowired
-    ProductRepository productRespository;
+    ProductRepository productRepository;
 
     @Autowired
-    AccountRepository accountRespository;
+    AccountRepository accountRepository;
 
     @Autowired
     SessionService sessionService;
 
+    @Autowired
+    ProductService productService;
 
+    public GetAllProductDto getAllUseToken(String type, String sort, String userId) throws ApiException {
+//        Session session = sessionService.getSessionByToken(token);
+//        if (session == null) {
+//            throw new ApiException("token khong hop le");
+//        }
+//        String userId = (String) request.getAttribute("user_id");
+
+        Account account = accountRepository.getAccountById(userId); // dung ra la phai goi service
+        List<Product> products;
+        // lay duoc user_info
+        // lay product_info
+        // >> can tao bang: session(user_id, token)
+        if (type != null && sort != null) {
+            products = productService.getAll(type, sort);
+        } else {
+            products = productService.getAll();
+        }
+        return new GetAllProductDto(products, account);
+
+    }
     public List<Product> getAll() {
         try {
-            return productRespository.getAll();
+            return productRepository.getAll();
 
         } catch (Exception e) {
             System.out.println(e);
@@ -40,11 +63,11 @@ public class ProductService {
         int limit = size ;
         int offset = (page -1)*size;
         try {
-            List<Product> data = productRespository.getProductPage(limit,offset);
+            List<Product> data = productRepository.getProductPage(limit,offset);
 
 
 
-            int totalItem = productRespository.countProduct();
+            int totalItem = productRepository.countProduct();
             int totalPage ;
             if(totalItem % size == 0){
                 totalPage = totalItem / size;
@@ -63,20 +86,20 @@ public class ProductService {
             throw new ApiException("token khong hop le");
         }
         String userId = session.getUserId();
-        Account account = accountRespository.getAccountById(userId);
-        List<Product> products = productRespository.getAll();
+        Account account = accountRepository.getAccountById(userId);
+        List<Product> products = productRepository.getAll();
         return new GetAllProductDto(products,account);
 
     }
     public GetAllProductDto getAllProductDto1(String token){
-        String userId = JwtUtil.verifyToken(token);
-        Account account = accountRespository.getAccountById(userId);
-        List<Product> products = productRespository.getAll();
+//        String userId = JwtUtil.verifyToken(token);
+        Account account = accountRepository.getAccountById("asdagafa");
+        List<Product> products = productRepository.getAll();
         return new GetAllProductDto(products,account);
     }
     public List<Product> getAll(String type, String sort) {
         try {
-            return productRespository.getAll(type,sort);
+            return productRepository.getAll(type,sort);
         } catch (Exception e) {
             System.out.println(e);
             return null;
@@ -85,7 +108,7 @@ public class ProductService {
 
     public Product search(String id) {
         try {
-            return productRespository.getProductById(id);
+            return productRepository.getProductById(id);
         } catch (Exception e) {
             System.out.println(e);
             return null;
@@ -93,7 +116,7 @@ public class ProductService {
     }
     public Product getProductByName(String display){
         try {
-            return productRespository.getProductByName(display);
+            return productRepository.getProductByName(display);
         }catch (Exception e){
             System.out.println(e);
             return null;
@@ -102,7 +125,7 @@ public class ProductService {
 
     public List<Product> display(String str) {
         try {
-            return productRespository.display(str);
+            return productRepository.display(str);
         } catch (Exception e) {
             System.out.println(e);
             return null;
@@ -111,7 +134,7 @@ public class ProductService {
 
     public List<Product> priceIn(String str) {
         try {
-            return productRespository.priceIn(str);
+            return productRepository.priceIn(str);
         } catch (Exception e) {
             System.out.println(e);
             return null;
@@ -120,7 +143,7 @@ public class ProductService {
 
     public Boolean addProduct(Product product) {
         try {
-            return productRespository.addProduct(product);
+            return productRepository.addProduct(product);
         } catch (Exception e) {
             System.out.println(e);
             return false;
@@ -130,7 +153,7 @@ public class ProductService {
 
     public Boolean updateProduct(Product product) {
         try {
-            return productRespository.updateProduct(product);
+            return productRepository.updateProduct(product);
         } catch (Exception e) {
             System.out.println(e);
             return false;
@@ -139,7 +162,7 @@ public class ProductService {
 
     public Boolean deleteProduct(String id) {
         try {
-            return productRespository.deleteProduct(id);
+            return productRepository.deleteProduct(id);
         } catch (Exception e) {
             System.out.println(e);
             return false;

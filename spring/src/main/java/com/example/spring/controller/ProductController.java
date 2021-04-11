@@ -13,6 +13,7 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -28,26 +29,11 @@ public class ProductController {
     AccountRepository accountRepository;
 
     @GetMapping("/all")
-    public GetAllProductDto getAll(@RequestParam(required = false) String type, @RequestParam(required = false) String sort, @RequestHeader(required = false) String token) throws ApiException {
-        // query check db lay user tuong ung voi token
-        // neu ko co user nao => fail
-        // neu co => lay ra user_id
-        Session session = sessionService.getSessionByToken(token);
-        if (session == null) {
-            throw new ApiException("token khong hop le");
-        }
-        String userId = session.getUserId();
-        Account account = accountRepository.getAccountById(userId); // dung ra la phai goi service
-        List<Product> products;
-        // lay duoc user_info
-        // lay product_info
-        // >> can tao bang: session(user_id, token)
-        if (type != null && sort != null) {
-            products = productService.getAll(type, sort);
-        } else {
-            products = productService.getAll();
-        }
-        return new GetAllProductDto(products, account);
+    public GetAllProductDto getAll(@RequestParam(required = false) String type, @RequestParam(required = false) String sort,HttpServletRequest request ) throws ApiException {
+        System.out.println("abc");
+       String userId = (String)request.getAttribute("user_id");
+        System.out.println(userId);
+        return productService.getAllUseToken(type, sort,userId);
     }
     @SneakyThrows
     @GetMapping("/getAllProductDto")

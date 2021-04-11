@@ -109,7 +109,7 @@ public class AccountRepository {
     }
 
     public Account getAccountByEmailAndPassword(String email, String password) {
-        String sql = "Select * from account where email = ? and password = ? limit 1";
+        String sql = "Select * from account where email = ? and password = ? limit 1;";
         System.out.println("account repo");
         List<Account> res = jdbcTemplate.query(sql, new AccountMapper(), new Object[]{email, password});
         if (res.size() == 0) {

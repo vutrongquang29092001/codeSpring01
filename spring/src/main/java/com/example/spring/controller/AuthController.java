@@ -48,7 +48,7 @@ public class AuthController {
             throw new ApiException("sai tai khoan hoac mat khau");
         }
         String accountId = account.getAccountID();
-        String token = JwtUtil.generateToken(accountId);
+        String token = JwtUtil.generateToken(accountId,account.getRole());
         return token;
 
     }
