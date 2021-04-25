@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/product")
-public class ProductController {
+public class ProductController extends  BaseController {
     @Autowired
     ProductService productService;
 
@@ -30,9 +30,9 @@ public class ProductController {
 
     @GetMapping("/all")
     public GetAllProductDto getAll(@RequestParam(required = false) String type, @RequestParam(required = false) String sort,HttpServletRequest request ) throws ApiException {
-        System.out.println("abc");
+
        String userId = (String)request.getAttribute("user_id");
-        System.out.println(userId);
+
         return productService.getAllUseToken(type, sort,userId);
     }
     @SneakyThrows
