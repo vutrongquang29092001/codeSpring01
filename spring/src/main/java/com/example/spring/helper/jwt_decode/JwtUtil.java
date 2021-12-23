@@ -19,6 +19,7 @@ public class JwtUtil {
         Map map = new HashMap<>();
         map.put("userId", userId);
         map.put("role", role);
+//        map.put("password")
         String token = Jwts.builder()
                 .setSubject(String.valueOf(userId))
                 .setClaims(map)
@@ -26,6 +27,7 @@ public class JwtUtil {
                 .setExpiration(expiredTime)
                 .signWith(SignatureAlgorithm.HS512, SECRET)
                 .compact();
+        System.out.println(token);
         return token;
     }
 
