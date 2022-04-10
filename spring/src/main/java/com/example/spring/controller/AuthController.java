@@ -5,7 +5,6 @@ import com.example.spring.dto.login.LoginResponseDto;
 import com.example.spring.entity.Account;
 import com.example.spring.exception.ApiException;
 import com.example.spring.helper.jwt_decode.JwtUtil;
-import com.example.spring.helper.jwt_decode.RSA;
 import com.example.spring.service.AccountService;
 import com.example.spring.service.SessionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,20 +53,6 @@ public class AuthController {
         return token;
 
     }
-    @PostMapping("/login2")  // ko luu token trong database , ma hoa userId thanh token roi dung token giai ma lai thanh userId
-    public String  login2(@RequestBody LoginRequestDto loginRequestDto) throws ApiException {
-        Account account = accountService.getAccountByEmailAndPassword(loginRequestDto.getEmail(), loginRequestDto.getPassword());
-        if (account == null) {
-            throw new ApiException("sai tai khoan hoac mat khau");
-        }
-        String accountId = account.getAccountID();
-        RSA rsa = new RSA();
-        rsa.initialize();
-        System.out.println("E: " + RSA.E + "D: " + rsa.getD() +"N: "+ rsa.getN());
-        BigInteger token1 = rsa.encrytion(rsa.changetoInt(accountId+"_"+account.getRole()),rsa.getN());
 
-        return token1.toString();
-
-    }
 
 }
